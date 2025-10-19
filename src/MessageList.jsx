@@ -15,20 +15,23 @@ export default function MessageList({ messages, onDelete }) {
             padding: "0.5rem 0",
           }}
         >
-          <p style={{ margin: 0 }}>{msg.text}</p>
+          {/* 投稿者名とメッセージ（改行対応） */}
+          <p style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+            <strong>{msg.name || "匿名"}</strong>: {msg.text}
+          </p>
 
+          {/* 作成日時 */}
           <small style={{ color: "#555" }}>
-            {
-              msg.createdAt
-                ? (msg.createdAt.toDate
-                    ? msg.createdAt.toDate().toLocaleString("ja-JP")
-                    : msg.createdAt.toLocaleString?.("ja-JP") || msg.createdAt)
-                : "日時不明"
-            }
+            {msg.createdAt
+              ? msg.createdAt.toDate
+                ? msg.createdAt.toDate().toLocaleString("ja-JP")
+                : msg.createdAt.toLocaleString?.("ja-JP") || msg.createdAt
+              : "日時不明"}
           </small>
 
+          {/* 削除ボタン */}
           <button
-            onClick={() => onDelete(msg.id)}
+            onClick={() => onDelete(msg.id, msg.uid)}
             style={{ marginLeft: "1rem" }}
           >
             削除
