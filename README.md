@@ -18,4 +18,15 @@ If you are developing a production application, we recommend using TypeScript wi
 
 # 地域コミュニティイベント管理アプリ
 
-てすと
+## セットアップ手順
+
+test
+
+## 使用技術・ライブラリ
+
+
+## 実装機能の説明
+
+
+## 動作確認方法
+

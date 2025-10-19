@@ -1,40 +1,76 @@
-import React, { useState, useEffect } from "react";
-import MessageForm from "./MessageForm.jsx";
-import MessageList from "./MessageList.jsx";
+import React, { useEffect, useState } from "react";
+import { auth, signInWithGoogle, logout, db } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  collection, addDoc, deleteDoc, doc, onSnapshot,
+  serverTimestamp, orderBy, query
+} from "firebase/firestore";
 
-const STORAGE_KEY_MESSAGES = "bbs_messages";
+import MessageForm from "./MessageForm";
+import MessageList from "./MessageList";
 
 export default function MessageBoard() {
-  // ✅ 初期化時に localStorage から即読み込む
-  const [messages, setMessages] = useState(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY_MESSAGES);
-      return stored ? JSON.parse(stored) : [];
-    } catch (err) {
-      console.error("Failed to parse messages:", err);
-      return [];
-    }
-  });
+  const [user, setUser] = useState(null);
+  const [messages, setMessages] = useState([]);
 
-  // ✅ messages が変化したら保存
+  // 認証状態監視
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_MESSAGES, JSON.stringify(messages));
-  }, [messages]);
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+    });
+    return () => unsubscribe();
+  }, []);
 
-  const handleAddMessage = ({ name, text }) => {
-    const id = Date.now();
-    const createdAt = new Date().toLocaleString();
-    setMessages([{ id, name, text, createdAt }, ...messages]);
+  // Firestore購読
+  useEffect(() => {
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setMessages(snapshot.docs.map((doc) => ({
+        id: doc.id, ...doc.data()
+      })));
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleAddMessage = async ({ text }) => {
+    if (!user) return alert("ログインしてください");
+
+    await addDoc(collection(db, "messages"), {
+      uid: user.uid,
+      name: user.displayName || "匿名",
+      text,
+      createdAt: serverTimestamp(),
+    });
   };
 
-  const handleDelete = (id) => {
-    setMessages(messages.filter((msg) => msg.id !== id));
+  const handleDelete = async (id, uid) => {
+    if (uid !== user?.uid) {
+      alert("自分の投稿のみ削除できます");
+      return;
+    }
+    await deleteDoc(doc(db, "messages", id));
   };
 
   return (
     <div>
-      <MessageForm onAdd={handleAddMessage} />
-      <MessageList messages={messages} onDelete={handleDelete} />
+      <h2>🧭 Firebase認証付き 掲示板</h2>
+
+      {user ? (
+        <div>
+          <p>ログイン中: {user.displayName}</p>
+          <button onClick={logout}>ログアウト</button>
+          <MessageForm onAdd={handleAddMessage} />
+          <MessageList
+            messages={messages}
+            onDelete={(id, uid) => handleDelete(id, uid)}
+          />
+        </div>
+      ) : (
+        <div>
+          <p>ログインして投稿を開始しましょう</p>
+          <button onClick={signInWithGoogle}>Googleでログイン</button>
+        </div>
+      )}
     </div>
   );
 }
