@@ -15,16 +15,18 @@ export default function MessageList({ messages, onDelete }) {
             padding: "0.5rem 0",
           }}
         >
-          <p style={{ margin: 0 }}>
-            <strong>{msg.name}</strong>
-          </p>
+          <p style={{ margin: 0 }}>{msg.text}</p>
 
-          {/* ✅ 改行を反映するために whiteSpace: pre-wrap を指定 */}
-          <p style={{ margin: "0.25rem 0", whiteSpace: "pre-wrap" }}>
-            {msg.text}
-          </p>
+          <small style={{ color: "#555" }}>
+            {
+              msg.createdAt
+                ? (msg.createdAt.toDate
+                    ? msg.createdAt.toDate().toLocaleString("ja-JP")
+                    : msg.createdAt.toLocaleString?.("ja-JP") || msg.createdAt)
+                : "日時不明"
+            }
+          </small>
 
-          <small style={{ color: "#555" }}>{msg.createdAt}</small>
           <button
             onClick={() => onDelete(msg.id)}
             style={{ marginLeft: "1rem" }}
