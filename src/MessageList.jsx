@@ -15,7 +15,15 @@ export default function MessageList({ messages, onDelete }) {
             padding: "0.5rem 0",
           }}
         >
-          <p style={{ margin: 0 }}>{msg.text}</p>
+          <p style={{ margin: 0 }}>
+            <strong>{msg.name}</strong>
+          </p>
+
+          {/* ✅ 改行を反映するために whiteSpace: pre-wrap を指定 */}
+          <p style={{ margin: "0.25rem 0", whiteSpace: "pre-wrap" }}>
+            {msg.text}
+          </p>
+
           <small style={{ color: "#555" }}>{msg.createdAt}</small>
           <button
             onClick={() => onDelete(msg.id)}

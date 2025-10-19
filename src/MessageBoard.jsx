@@ -1,34 +1,30 @@
 import React, { useState, useEffect } from "react";
-import MessageForm from "./MessageForm";
-import MessageList from "./MessageList";
+import MessageForm from "./MessageForm.jsx";
+import MessageList from "./MessageList.jsx";
 
-const STORAGE_KEY = "bbs_messages"; // 保存キー名
+const STORAGE_KEY_MESSAGES = "bbs_messages";
 
 export default function MessageBoard() {
-  // const [messages, setMessages] = useState([]);
+  // ✅ 初期化時に localStorage から即読み込む
   const [messages, setMessages] = useState(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : [];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_MESSAGES);
+      return stored ? JSON.parse(stored) : [];
+    } catch (err) {
+      console.error("Failed to parse messages:", err);
+      return [];
+    }
   });
 
-
-  // ✅ 初回読み込み時に localStorage からデータ取得
+  // ✅ messages が変化したら保存
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      setMessages(JSON.parse(stored));
-    }
-  }, []);
-
-  // ✅ messagesが変化したら localStorage に保存
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    localStorage.setItem(STORAGE_KEY_MESSAGES, JSON.stringify(messages));
   }, [messages]);
 
-  const handleAddMessage = (newMessage) => {
+  const handleAddMessage = ({ name, text }) => {
     const id = Date.now();
     const createdAt = new Date().toLocaleString();
-    setMessages([{ id, text: newMessage, createdAt }, ...messages]);
+    setMessages([{ id, name, text, createdAt }, ...messages]);
   };
 
   const handleDelete = (id) => {
