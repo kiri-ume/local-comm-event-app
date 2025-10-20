@@ -17,6 +17,6 @@ export const db = getFirestore(app);
 export const auth = getAuth(app);
 
 // Googleログイン用
-export const provider = new GoogleAuthProvider();
-export const signInWithGoogle = () => signInWithPopup(auth, provider);
-export const logout = () => signOut(auth);
+// export const provider = new GoogleAuthProvider();
+// export const signInWithGoogle = () => signInWithPopup(auth, provider);
+// export const logout = () => signOut(auth);

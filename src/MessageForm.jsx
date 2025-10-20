@@ -1,42 +1,38 @@
-import React, { useState } from "react";
+import React from "react";
 
-const STORAGE_KEY_NAME = "bbs_username";
-
-export default function MessageForm({ onAdd }) {
-  const [name, setName] = useState(localStorage.getItem(STORAGE_KEY_NAME) || "");
-  const [text, setText] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!name.trim() || !text.trim()) return;
-
-    localStorage.setItem(STORAGE_KEY_NAME, name);
-    onAdd({ name, text });
-    setText("");
-  };
+export default function MessageList({ messages, onDelete }) {
+  if (messages.length === 0) {
+    return <p>まだ投稿はありません。</p>;
+  }
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
-      <div style={{ marginBottom: "0.5rem" }}>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="お名前を入力"
-          style={{ width: "20%", marginRight: "0.5rem" }}
-        />
-      </div>
-      <div style={{ marginBottom: "0.5rem" }}>
-        {/* ✅ テキストエリアで複数行対応 */}
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="投稿内容を入力（改行も可）"
-          rows={3}
-          style={{ width: "70%", marginRight: "0.5rem", resize: "vertical" }}
-        />
-      </div>
-      <button type="submit">投稿</button>
-    </form>
+    <ul style={{ listStyle: "none", padding: 0 }}>
+      {messages.map((msg) => (
+        <li
+          key={msg.id}
+          style={{
+            borderBottom: "1px solid #ccc",
+            padding: "0.5rem 0",
+          }}
+        >
+          <p style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+            <strong>{msg.name || "匿名"}</strong>: {msg.text}
+          </p>
+          <small style={{ color: "#555" }}>
+            {msg.createdAt
+              ? msg.createdAt.toDate
+                ? msg.createdAt.toDate().toLocaleString("ja-JP")
+                : msg.createdAt.toLocaleString?.("ja-JP") || msg.createdAt
+              : "日時不明"}
+          </small>
+          <button
+            onClick={() => onDelete(msg.id, msg.uid)}
+            style={{ marginLeft: "1rem" }}
+          >
+            削除
+          </button>
+        </li>
+      ))}
+    </ul>
   );
 }
