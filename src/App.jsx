@@ -1,103 +1,60 @@
-import React, { useEffect, useState } from "react";
-import { db } from "./firebase";
-import { collection, query, orderBy, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp } from "firebase/firestore";
-import { useAuth } from "./AuthContext";
-import MessageList from "./MessageList";
+import React, { useState } from "react";
+import { useAuth } from "./context/AuthContext";
+import LoginScreen from "./components/LoginScreen";
+import BoardSelector from "./components/BoardSelector";
+import MessageBoard from "./components/MessageBoard";
 
 export default function App() {
-  const { user, login, logout } = useAuth();
+  const { user, signOut } = useAuth();
+  const [selectedBoard, setSelectedBoard] = useState(null);
 
-  const [boards] = useState([
-    { id: "general", name: "雑談" },
-    { id: "tech", name: "技術" },
-    { id: "help", name: "質問" },
-  ]);
-  const [currentBoard, setCurrentBoard] = useState("general");
-  const [messages, setMessages] = useState([]);
-  const [text, setText] = useState("");
+  console.log("App user:", user);
+  console.log("Selected board:", selectedBoard);
 
-  // 現在の板のメッセージをリアルタイム購読
-  useEffect(() => {
-    const q = query(
-      collection(db, "boards", currentBoard, "messages"),
-      orderBy("createdAt", "asc")
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setMessages(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
-    });
-    return () => unsubscribe();
-  }, [currentBoard]);
+  // ログインしていない場合はログイン画面へ
+  if (!user) {
+    return <LoginScreen />;
+  }
 
-  const handleAddMessage = async (e) => {
-    e.preventDefault();
-    if (!user) return alert("ログインしてください");
-    if (!text.trim()) return;
-
-    await addDoc(collection(db, "boards", currentBoard, "messages"), {
-      uid: user.uid,
-      name: user.displayName || "匿名",
-      text,
-      createdAt: serverTimestamp(),
-    });
-    setText("");
-  };
-
-  const handleDelete = async (id, uid) => {
-    if (uid !== user?.uid) return alert("自分の投稿のみ削除できます");
-    await deleteDoc(doc(db, "boards", currentBoard, "messages", id));
-  };
-
-  return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
-      <h2>🔥 マルチ掲示板システム</h2>
-
-      {/* ログイン状態 */}
-      <div style={{ marginBottom: "1rem" }}>
-        {user ? (
-          <>
-            <p>
-              ログイン中: <strong>{user.displayName || user.email}</strong>
-            </p>
-            <button onClick={logout}>ログアウト</button>
-          </>
-        ) : (
-          <button onClick={login}>Googleでログイン</button>
-        )}
-      </div>
-
-      {/* 板切り替え */}
-      <div style={{ marginBottom: "1rem" }}>
-        {boards.map((b) => (
-          <button
-            key={b.id}
-            onClick={() => setCurrentBoard(b.id)}
-            style={{
-              marginRight: "0.5rem",
-              backgroundColor: currentBoard === b.id ? "#4CAF50" : "#ddd",
-              color: currentBoard === b.id ? "white" : "black",
-            }}
-          >
-            {b.name}
-          </button>
-        ))}
-      </div>
-
-      {/* 投稿フォーム */}
-      <form onSubmit={handleAddMessage}>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={3}
-          placeholder={`${boards.find((b) => b.id === currentBoard)?.name}板に投稿`}
-          style={{ width: "100%", marginBottom: "0.5rem" }}
-        />
-        <button type="submit" disabled={!user}>
-          投稿
+  // ログインしているが板を選択していない場合は板一覧を表示
+  if (!selectedBoard) {
+    return (
+      <div className="p-6 text-center">
+        <h1 className="text-2xl font-bold mb-4">掲示板を選択してください</h1>
+        <BoardSelector onSelect={setSelectedBoard} />
+        <button
+          onClick={signOut}
+          className="mt-4 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+        >
+          ログアウト
         </button>
-      </form>
+      </div>
+    );
+  }
 
-      {/* メッセージ一覧 */}
-      <MessageList messages={messages} onDelete={handleDelete} />
+  // 板が選択されている場合はメッセージボードを表示
+  return (
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">板: {selectedBoard}</h1>
+        <div>
+          <button
+            onClick={() => setSelectedBoard(null)}
+            className="mr-2 px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            板一覧に戻る
+          </button>
+          <button
+            onClick={signOut}
+            className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
+          >
+            ログアウト
+          </button>
+        </div>
+      </div>
+
+      {/* 選択された板のメッセージ一覧を表示 */}
+      <MessageBoard boardId={selectedBoard} />
     </div>
   );
 }
