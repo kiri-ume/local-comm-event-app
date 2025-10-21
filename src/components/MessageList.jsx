@@ -16,7 +16,8 @@ export default function MessageList({ messages, onDelete, currentUser }) {
           >
             <div className="flex justify-between items-start">
               <div>
-                <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+                {/* <p className="whitespace-pre-wrap break-words">{msg.text}</p> */}
+                <p className="whitespace-pre-wrap break-words">{linkify(msg.text)}</p>
                 <div className="text-sm text-gray-500 mt-1">
                   <span className="font-medium">{msg.name}</span> ・{" "}
                   {msg.createdAt
@@ -40,4 +41,24 @@ export default function MessageList({ messages, onDelete, currentUser }) {
       })}
     </ul>
   );
+}
+
+function linkify(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlRegex).map((part, idx) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={idx}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
 }

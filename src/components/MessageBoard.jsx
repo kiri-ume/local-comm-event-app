@@ -12,6 +12,8 @@ import {
 import MessageList from "./MessageList";
 import MessageForm from "./MessageForm";
 import { useAuth } from "../context/AuthContext";
+import { doc, deleteDoc } from "firebase/firestore";
+
 
 export default function MessageBoard({ boardId }) {
   const [messages, setMessages] = useState([]);
@@ -43,11 +45,25 @@ export default function MessageBoard({ boardId }) {
     });
   };
 
+  const handleDeleteMessage = async (id, uid) => {
+    if (uid !== user?.uid) {
+      alert("自分の投稿のみ削除できます");
+      return;
+    }
+    await deleteDoc(doc(db, "boards", boardId, "messages", id));
+  };
+
   return (
     <div className="p-4">
       <h2 className="text-lg font-bold mb-2">板：{boardId}</h2>
-      <MessageList messages={messages} />
-      <MessageForm onAddMessage={handleAddMessage} />
+      {/* <MessageList messages={messages} /> */}
+      <MessageList
+        messages={messages}
+        onDelete={handleDeleteMessage}
+        currentUser={user} // ← user を渡す
+      />
+      {/* <MessageForm onAddMessage={handleAddMessage} /> */}
+      <MessageForm onSend={handleAddMessage} />
     </div>
   );
 }
