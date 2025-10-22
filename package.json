@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "npm run dev -- --port 3030",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

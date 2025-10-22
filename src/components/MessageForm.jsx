@@ -6,7 +6,8 @@ export default function MessageForm({ onSend }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!text.trim()) return;
-    onSend({ text });
+    // onSend({ text });
+    onSend(text);
     setText("");
   };
 
