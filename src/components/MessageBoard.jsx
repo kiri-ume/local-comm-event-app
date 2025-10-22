@@ -19,6 +19,12 @@ export default function MessageBoard({ boardId }) {
   const [messages, setMessages] = useState([]);
   const { user } = useAuth();
 
+  // for debug
+  useEffect(() => {
+    console.log("[MessageBoard] mounted for boardId:", boardId);
+    return () => console.log("[MessageBoard] unmounted for boardId:", boardId);
+  }, [boardId]);
+
   useEffect(() => {
     if (!boardId) return;
     const q = query(
@@ -55,7 +61,7 @@ export default function MessageBoard({ boardId }) {
 
   return (
     <div className="p-4">
-      <h2 className="text-lg font-bold mb-2">板：{boardId}</h2>
+      {/* <h2 className="text-lg font-bold mb-2">板：{boardId}</h2> */}
       {/* <MessageList messages={messages} /> */}
       <MessageList
         messages={messages}

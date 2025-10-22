@@ -4,6 +4,7 @@ import LoginScreen from "./components/LoginScreen";
 import BoardSelector from "./components/BoardSelector";
 import MessageBoard from "./components/MessageBoard";
 
+
 export default function App() {
   const { user, signOut } = useAuth();
   const [selectedBoard, setSelectedBoard] = useState(null);
@@ -20,8 +21,13 @@ export default function App() {
   if (!selectedBoard) {
     return (
       <div className="p-6 text-center">
-        <h1 className="text-2xl font-bold mb-4">掲示板を選択してください</h1>
-        <BoardSelector onSelect={setSelectedBoard} />
+        <h1 className="text-2xl font-bold mb-4">地域交流連絡用掲示板 </h1>
+        <p className="text-gray-600">
+          各板を選択してメッセージを投稿・閲覧できます。 <br></br>
+          投稿は自分のメッセージのみ削除可能です。
+        </p>
+        {/* <BoardSelector onSelect={setSelectedBoard} /> */}
+        <BoardSelector onSelect={(board) => setSelectedBoard(board)} />
         <button
           onClick={signOut}
           className="mt-4 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
@@ -36,7 +42,9 @@ export default function App() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">板: {selectedBoard}</h1>
+        {/* <h1 className="text-2xl font-bold">板: {selectedBoard}</h1> */}
+        {/* <MessageBoard boardId={selectedBoard.id} /> */}
+        <h1 className="text-2xl font-bold">板: {selectedBoard.name}</h1>
         <div>
           <button
             onClick={() => setSelectedBoard(null)}
@@ -54,7 +62,8 @@ export default function App() {
       </div>
 
       {/* 選択された板のメッセージ一覧を表示 */}
-      <MessageBoard boardId={selectedBoard} />
+      {/* <MessageBoard boardId={selectedBoard} /> */}
+      <MessageBoard boardId={selectedBoard.id} />
     </div>
   );
 }

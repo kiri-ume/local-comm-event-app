@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function MessageList({ messages, onDelete, currentUser }) {
   if (messages.length === 0) {
     return <p className="text-center text-gray-500 mt-6">まだ投稿はありません。</p>;
   }
+
+  // for debug
+  useEffect(() => {
+    console.log("[MessageList] mounted — messages length:", messages?.length);
+    return () => console.log("[MessageList] unmounted");
+  }, []);
 
   return (
     <ul className="space-y-3 mt-4">
