@@ -47,6 +47,7 @@
    npm install
    ```
 3. Firebase設定ファイルの追加
+
    既存のFirebaseをお使いになられる場合は
      ./src/context/firebase.js
    のfirebaseConfigを書き換えてください。
