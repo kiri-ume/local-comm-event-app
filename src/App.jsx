@@ -24,7 +24,8 @@ export default function App() {
         <h1 className="text-2xl font-bold mb-4">地域交流連絡用掲示板 </h1>
         <p className="text-gray-600">
           各板を選択してメッセージを投稿・閲覧できます。 <br></br>
-          投稿は自分のメッセージのみ削除可能です。
+          投稿は自分のメッセージのみ削除可能です。<br></br>
+          掲示板は各自で新規作成可能です。カテゴリ増設、板削除は「その他・ヘルプ」の「ご質問」でご相談ください。
         </p>
         {/* <BoardSelector onSelect={setSelectedBoard} /> */}
         <BoardSelector onSelect={(board) => setSelectedBoard(board)} />

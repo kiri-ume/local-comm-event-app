@@ -10,6 +10,7 @@
 - メッセージ投稿(外部リンク機能あり)
 - メッセージ削除
 - メッセージ検索(日時指定あり)
+- 管理者メール通知機能(要Zapier)
 
 以下は今後実装を予定している機能です。
 
@@ -24,7 +25,7 @@
 
 #### 動作環境
 - Node.js v18 以上 
-- npm または yarn 
+- npm
 - Firebase プロジェクト（無料プラン可） 
 - 任意のブラウザ（Google Chrome 推奨）
 
@@ -39,8 +40,8 @@
 
 1. **リポジトリのクローン**
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/kiri-ume/local-comm-event-app.git
+   cd local-comm-event-app
 2. 依存関係のインストール
    ```
    npm install
