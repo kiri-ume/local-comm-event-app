@@ -15,15 +15,15 @@ const firebaseConfig = {
 };
 
 
-// ✅ initializeApp はこの位置で定義（authより前！）
+// initializeApp はこの位置で定義（authより前！）
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// ✅ app 定義の後で getAuth / getFirestore を呼ぶ
+// app 定義の後で getAuth / getFirestore を呼ぶ
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 
-// ✅ デバッグ出力（初期化確認）
+// デバッグ出力（初期化確認）
 console.log("[Firebase] Initialized app:", app.name);
 
 export default app;

@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Auth状態の購読を1回だけに統一
+  // Auth状態の購読を1回だけに統一
   useEffect(() => {
     console.log("[AuthContext] useEffect mount - subscribing");
 
@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
-  // ✅ Googleログイン
+  // Googleログイン
   const signInWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
@@ -40,7 +40,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ✅ ログアウト
+  // ログアウト
   const signOutUser = async () => {
     try {
       await signOut(auth);

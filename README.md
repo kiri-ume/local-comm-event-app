@@ -16,7 +16,7 @@
 
 - 最新投稿ハイライト
 - メッセージのスレッド形式
-- リアクション機能
+- リアクション(いいね)機能
 - カレンダ機能
 
 ## セットアップ手順
@@ -47,11 +47,13 @@
    npm install
    ```
 3. Firebase設定ファイルの追加
+   既存のFirebaseをお使いになられる場合は
+     ./src/context/firebase.js
+   のfirebaseConfigを書き換えてください。
+
    ```
-   import { initializeApp } from "firebase/app";
-   import { getFirestore } from "firebase/firestore";
-   import { getAuth } from "firebase/auth";
-   
+   //-- ./src/context/firebase.js ファイル
+
    // Firebaseから取得したapiKeyなどの設定を貼り付けてください
    const firebaseConfig = {
      apiKey: "xxxx",
@@ -62,14 +64,21 @@
      appId: "xxxx"
    };
    
-   const app = initializeApp(firebaseConfig);
-   export const db = getFirestore(app);
-   export const auth = getAuth(app);
    ```
 4. ローカル開発サーバの起動
    ```
    npm start
    ```
+5. (公開する場合)Vercelでデプロイ
+   ```
+   # Vercelをインストール
+   npm install -g vercel
+
+   # デプロイ
+   vercel
+   ```
+   状況や環境に応じてデプロイ手段はご変更ください。
+
 
 ## 使用技術・ライブラリ
 
@@ -99,7 +108,7 @@
 ### 投稿機能
 
 - 投稿本文・投稿者名・投稿日時を Firestore に保存
-- URL 自動リンク化
+- URL自動リンク化
 - 投稿削除（投稿者本人のみ可）
 
 ### 検索・フィルタ機能
