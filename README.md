@@ -51,6 +51,7 @@
    import { getFirestore } from "firebase/firestore";
    import { getAuth } from "firebase/auth";
    
+   // Firebaseから取得したapiKeyなどの設定を貼り付けてください
    const firebaseConfig = {
      apiKey: "xxxx",
      authDomain: "xxxx.firebaseapp.com",
